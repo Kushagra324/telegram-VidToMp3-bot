@@ -8,10 +8,34 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import yt_dlp
 
 BOT_TOKEN = os.getenv("bot")  # 🔑 Replace with your bot token
+YOUTUBE_COOKIES = os.getenv("YOUTUBE_COOKIES")
 
 # --- Logging setup ---
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# --- Setup cookies from environment variable ---
+def setup_cookies():
+    """Create cookies.txt from environment variable if provided"""
+    cookies_path = "cookies.txt"
+    
+    # If cookies.txt already exists, use it
+    if os.path.exists(cookies_path):
+        logger.info("Using existing cookies.txt file")
+        return
+    
+    # Otherwise, create from environment variable if available
+    if YOUTUBE_COOKIES:
+        try:
+            with open(cookies_path, "w") as f:
+                f.write(YOUTUBE_COOKIES)
+            logger.info("Created cookies.txt from YOUTUBE_COOKIES environment variable")
+        except Exception as e:
+            logger.warning(f"Failed to create cookies.txt: {e}")
+    else:
+        logger.info("No cookies configured (YOUTUBE_COOKIES env var not set)")
+# Setup cookies on startup
+setup_cookies()
 
 progress = {}
 
