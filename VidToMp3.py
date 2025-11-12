@@ -78,7 +78,11 @@ def download_audio(url, uid):
             }
         ],
     }
-
+    
+    cookies_path = "cookies.txt"
+    if os.path.exists(cookies_path):
+        opts["cookiefile"] = cookies_path
+        
     with yt_dlp.YoutubeDL(opts) as ydl:
         info = ydl.extract_info(url, download=True)
 
